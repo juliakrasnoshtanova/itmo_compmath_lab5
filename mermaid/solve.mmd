@@ -1,0 +1,34 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Общий ход расчёта<br/>solve"]
+    TITLE --> INPUT[/"Ввод: таблица узлов, точка интерполяции x"/]
+    INPUT --> PARSE["Разбор таблицы:<br/>points ← parse_rows(таблица)<br/>(узлы отсортированы по x)<br/>n ← points.count"]
+    PARSE --> CHECK_MIN{"n < 2?"}
+    CHECK_MIN -- "Да" --> ERR_MIN[/"Вывод: нужно не меньше 2 узлов"/]
+    ERR_MIN --> END
+    CHECK_MIN -- "Нет" --> CHECK_MAX{"n > 12?"}
+    CHECK_MAX -- "Да" --> ERR_MAX[/"Вывод: слишком много узлов,<br/>допустимо не больше 12"/]
+    ERR_MAX --> END
+    CHECK_MAX -- "Нет" --> CHECK_X{"есть совпадающие x<sub>i</sub>?"}
+    CHECK_X -- "Да" --> ERR_X[/"Вывод: узлы интерполяции<br/>должны быть различны"/]
+    ERR_X --> END
+    CHECK_X -- "Нет" --> QUERY["xx ← parse_float_token(x)"]
+    QUERY --> CHECK_Q{"xx не число?"}
+    CHECK_Q -- "Да" --> ERR_Q[/"Вывод: некорректное число в поле x"/]
+    ERR_Q --> END
+
+    CHECK_Q -- "Нет" --> INIT["Подготовка:<br/>results ← []<br/>k ← 0"]
+    INIT --> CHECK_K{"k < len(METHODS)?"}
+    CHECK_K -- "Да" --> CALC["Вычислить одним методом:<br/>method ← METHODS<sub>k</sub><br/>results ← results + [interpolate(points, xx, method)]<br/>k ← k + 1"]
+    CALC --> CHECK_K
+
+    CHECK_K -- "Нет" --> EXACT["exact ← f(xx), если узлы получены<br/>табулированием функции f, иначе None"]
+    EXACT --> COMPUTED["computed ← successful(results)<br/>(методы, давшие значение)"]
+    COMPUTED --> CHECK_C{"computed пуст?"}
+    CHECK_C -- "Да" --> ERR_NONE[/"Вывод: results,<br/>ни один метод не применим к этим данным"/]
+    ERR_NONE --> END
+    CHECK_C -- "Нет" --> SPREAD["Сравнение значений:<br/>spread ← max(value) − min(value) по computed"]
+    SPREAD --> OUT_OK[/"Вывод: results, spread, exact,<br/>таблицы конечных и разделённых разностей,<br/>график с узлами и точкой xx"/]
+    OUT_OK --> END
+    END(["Конец"])

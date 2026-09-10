@@ -1,0 +1,8 @@
+*.aux
+*.log
+*.out
+.idea
+__pycache__
+.venv
+.DS_Store
+result.txt

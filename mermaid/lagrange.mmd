@@ -1,0 +1,20 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Многочлен Лагранжа<br/>lagrange(x, y, xx),  L(xx) = y<sub>0</sub> · l<sub>0</sub>(xx) + … + y<sub>n−1</sub> · l<sub>n−1</sub>(xx)"]
+    TITLE --> INPUT[/"Ввод: x, y, xx"/]
+    INPUT --> INIT["Подготовка:<br/>n ← len(x)<br/>s ← 0<br/>i ← 0"]
+    INIT --> CHECK_I{"i < n?"}
+    CHECK_I -- "Да" --> LINIT["Базисный многочлен для узла i:<br/>li ← 1<br/>j ← 0"]
+    LINIT --> CHECK_J{"j < n?"}
+    CHECK_J -- "Да" --> CHECK_NE{"j ≠ i?"}
+    CHECK_NE -- "Да" --> LMUL["li ← li · (xx − x<sub>j</sub>) / (x<sub>i</sub> − x<sub>j</sub>)"]
+    LMUL --> NEXT_J["j ← j + 1"]
+    CHECK_NE -- "Нет" --> NEXT_J
+    NEXT_J --> CHECK_J
+    CHECK_J -- "Нет" --> ADD["s ← s + y<sub>i</sub> · li<br/>i ← i + 1"]
+    ADD --> CHECK_I
+    NEXT_J ~~~ OUT_OK
+    ADD ~~~ OUT_OK
+    CHECK_I -- "Нет" --> OUT_OK[/"Вывод: s"/]
+    OUT_OK --> END_OK(["Конец"])

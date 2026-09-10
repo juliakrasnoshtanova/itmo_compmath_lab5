@@ -1,0 +1,23 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Многочлен Ньютона с конечными разностями<br/>newton_konech(x, y, xx)"]
+    TITLE --> INPUT[/"Ввод: x, y, xx"/]
+    INPUT --> INIT["Подготовка:<br/>n ← len(x) − 1<br/>h ← x<sub>1</sub> − x<sub>0</sub><br/>tabl ← konech_raznosti(y)"]
+    INIT --> CHECK_V{"vybor_newton(x, xx) = 1,<br/>т.е. xx ≤ (x<sub>0</sub> + x<sub>n</sub>) / 2?"}
+
+    CHECK_V -- "Да" --> INIT1["Первая формула (вперёд):<br/>t ← (xx − x<sub>0</sub>) / h<br/>s ← y<sub>0</sub><br/>p ← 1<br/>k ← 1"]
+    INIT1 --> CHECK_K1{"k ≤ n?"}
+    CHECK_K1 -- "Да" --> BODY1["p ← p · (t − (k − 1))<br/>s ← s + p / k! · tabl<sub>k, 0</sub><br/>k ← k + 1"]
+    BODY1 --> CHECK_K1
+
+    CHECK_V -- "Нет" --> INIT2["Вторая формула (назад):<br/>t ← (xx − x<sub>n</sub>) / h<br/>s ← y<sub>n</sub><br/>p ← 1<br/>k ← 1"]
+    INIT2 --> CHECK_K2{"k ≤ n?"}
+    CHECK_K2 -- "Да" --> BODY2["p ← p · (t + (k − 1))<br/>s ← s + p / k! · tabl<sub>k, n−k</sub><br/>k ← k + 1"]
+    BODY2 --> CHECK_K2
+
+    BODY1 ~~~ OUT_OK
+    BODY2 ~~~ OUT_OK
+    CHECK_K1 -- "Нет" --> OUT_OK[/"Вывод: s"/]
+    CHECK_K2 -- "Нет" --> OUT_OK
+    OUT_OK --> END_OK(["Конец"])

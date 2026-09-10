@@ -1,0 +1,32 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Вычисление значения одним методом<br/>interpolate"]
+    TITLE --> INPUT[/"Ввод: points (x, y, n), xx, method"/]
+    INPUT --> CHECK_MIN{"n < method.min_points?"}
+    CHECK_MIN -- "Да" --> ERR_MIN[/"Вывод: метод не вычислен,<br/>нужно не меньше method.min_points узлов"/]
+    ERR_MIN --> END
+
+    CHECK_MIN -- "Нет" --> CHECK_UNI{"method.uniform<br/>и узлы не равноотстоящие<br/>(is_uniform(points) = False)?"}
+    CHECK_UNI -- "Да" --> ERR_UNI[/"Вывод: метод не вычислен,<br/>узлы не равноотстоящие,<br/>конечные разности не применимы"/]
+    ERR_UNI --> END
+
+    CHECK_UNI -- "Нет" --> EVAL["Значение многочлена в точке:<br/>value ← method.evaluate(x, y, xx)"]
+    EVAL --> CHECK_EXC{"возникла ошибка<br/>(ValueError, ZeroDivisionError,<br/>OverflowError)?"}
+    CHECK_EXC -- "Да" --> ERR_EXC[/"Вывод: метод не вычислен,<br/>не удалось вычислить значение"/]
+    ERR_EXC --> END
+    CHECK_EXC -- "Нет" --> CHECK_FIN{"value конечно?"}
+    CHECK_FIN -- "Нет" --> ERR_FIN[/"Вывод: метод не вычислен,<br/>значение не определено"/]
+    ERR_FIN --> END
+
+    CHECK_FIN -- "Да" --> CHECK_BR{"method.branch задан?"}
+    CHECK_BR -- "Да" --> BRANCH["branch ← method.branch(x, xx)<br/>(первая или вторая формула Ньютона<br/>по vybor_newton(x, xx))"]
+    CHECK_BR -- "Нет" --> NO_BRANCH["branch ← «»"]
+    BRANCH --> CHECK_PAR
+    NO_BRANCH --> CHECK_PAR{"method.parameter задан?"}
+    CHECK_PAR -- "Да" --> PARAM["parameter ← method.parameter(x, xx)<br/>(t = (xx − x<sub>0</sub>) / h или t = (xx − x<sub>n</sub>) / h)"]
+    CHECK_PAR -- "Нет" --> NO_PARAM["parameter ← None"]
+    PARAM --> OUT_OK
+    NO_PARAM --> OUT_OK[/"Вывод: value, branch, parameter"/]
+    OUT_OK --> END
+    END(["Конец"])

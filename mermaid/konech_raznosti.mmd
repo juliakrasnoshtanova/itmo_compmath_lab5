@@ -1,0 +1,17 @@
+%%{init: {"flowchart": {"nodeSpacing": 24, "rankSpacing": 30, "wrappingWidth": 460}, "themeVariables": {"fontSize": "17px"}}}%%
+flowchart TD
+    START(["Начало"])
+    START --> TITLE["Таблица конечных разностей<br/>konech_raznosti(y)"]
+    TITLE --> INPUT[/"Ввод: y"/]
+    INPUT --> INIT["Подготовка:<br/>n ← len(y)<br/>tabl ← [y]  (разности нулевого порядка)<br/>k ← 1"]
+    INIT --> CHECK_K{"k < n?"}
+    CHECK_K -- "Да" --> KINIT["Разности порядка k:<br/>stolb ← []<br/>i ← 0"]
+    KINIT --> CHECK_I{"i < n − k?"}
+    CHECK_I -- "Да" --> BODY["stolb ← stolb + [tabl<sub>k−1, i+1</sub> − tabl<sub>k−1, i</sub>]<br/>i ← i + 1"]
+    BODY --> CHECK_I
+    CHECK_I -- "Нет" --> STORE["tabl ← tabl + [stolb]<br/>k ← k + 1"]
+    STORE --> CHECK_K
+    BODY ~~~ OUT_OK
+    STORE ~~~ OUT_OK
+    CHECK_K -- "Нет" --> OUT_OK[/"Вывод: tabl"/]
+    OUT_OK --> END_OK(["Конец"])
